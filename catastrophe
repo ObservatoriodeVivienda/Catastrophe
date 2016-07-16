@@ -1,21 +1,156 @@
 #!/bin/bash
 
-# TODO: Explain this madness
+#
+# Wrote by:   Mr. Outis
+#
 
-lat=$1
-lon=$2
+VERSION="0.1"
 
-xscr=350
-yscr=400
+function usage() {
+  echo \
+"""
+  NAME:
+      catastrophe - Get the cadastre number for a given latitud longitude.
 
-xutm=0
-yutm=0
+  USAGE:
+      catastrophe [options] lat lon
 
-# Change this for your Cookie
-session=FED985FBF64D1373B0E57CF95E5DBD3D
+  VERSION:
+      $VERSION
 
-req=$(curl -s --cookie JSESSIONID=$session http://ciudadmx.df.gob.mx:8080/seduvi/busquedageoseduvi/buscarCuentaCatastral\?xScreen\=$xscr\&yScreen\=$yscr\&x\=$lon\&y\=$lat\&z\=0\&mapWidth\=700\&mapHeight\=800\&ocultar=1)
+  OPTIONS:
+      -d                Run cURL with the verbose flag.
+      -h                Shows this menu.
 
-catastro=$(curl -s --cookie JSESSIONID=$session http://ciudadmx.df.gob.mx:8080/seduvi/principalMapFrameActualizar.jsp\?op\=-1\&x\=$lon\&y\=$lat\&z\=1\&mapWidth\=700\&mapHeight\=800\&dir\=0\&xMouseDown\=$xscr\&yMouseDown\=$yscr\&xMouseUp\=$xscr\&yMouseUp\=$yscr\&stepZoom\=2\&verEscala\=1\&verVistaAerea\=1\&verControles\=1\&xVistaAerea\=0\&yVistaAerea\=0\&zVistaAerea\=0\&idGeocerca\=\&setStar\=0\&sizeVistaAerea\=150\&topStarGuardado\=0\&leftStarGuardado\=0\&displayLayerGuardado\=none\&topLayerGuardado\=0\&leftLayerGuardado\=0\&widthLayerGuardado\=0\&heightLayerGuardado\=0\&mapImage\=MapStreamServlet\?x\=$lon\&y\=$lat\&z\=1.0\&mapWidth\=700\&mapHeight\=800\&geosetRutaArchivoPrincipal\=D:\\seduvidatos\\cartografia\\Default3.mdf\&geosetRutaCarpetaPrincipal\=D:\\seduvidatos\\cartografia\&recupSession\=1\&guardarMapa\=0\&setCopyright\=0\&longitudMin\=\&latitudMin\=\&longitudMax\=\&latitudMax\=\&xUtm\=$xutm\&yUtm\=$yutm\&zFrameVistaAerea\=3.0\&zMapFrameVistaAerea\=1.0 | grep -i -o "reporteSeduvi(.*)" | cut -d ',' -f 2)
+  EXAMPLE:
+      $ catastrophe 19.401408 -99.201958
+      OUTPUT:  037_354_19
 
-echo "$catastro"
+  REPOSITORY:
+      http://github.com/MrOutis/Catastrophe
+"""
+  exit 1
+}
+
+[ -z "$2" ] && usage
+
+
+# Flags
+DEBUG_MODE=''
+
+# Parse flags
+while getopts 'dh' flag; do
+  case "${flag}" in
+    d) DEBUG_MODE='true' ;;
+    h) usage ;;
+  esac
+done
+shift $(($OPTIND-1))
+
+if [ -z "$DEBUG_MODE" ]
+then
+  CURL_EXTRA_FLAGS='-s'
+else
+  CURL_EXTRA_FLAGS='-v'
+fi
+
+
+# WARNING: Dragons ahead!
+ROOT_URL="http://ciudadmx.df.gob.mx:8080/seduvi"
+
+LAT=$1
+LON=$2
+
+MOUSE_CLICK_X=350
+MOUSE_CLICK_Y=400
+
+MAP_WIDTH=700
+MAP_HEIGHT=800
+
+# We need a cookie to make requests effectively
+SESSION_COOKIE=4DD1BC5ECCE23E497CC83915A07D6096
+
+
+function prepare_to_request_account() {
+  local ENDPOINT="/busquedageoseduvi/buscarCuentaCatastral"
+  local url=$ROOT_URL$ENDPOINT
+
+  # Parameters
+  url+="?"
+
+  url+="&xScreen=$MOUSE_CLICK_X"
+  url+="&yScreen=$MOUSE_CLICK_Y"
+  url+="&x=$LON"
+  url+="&y=$LAT"
+  url+="&z=0"
+  url+="&mapWidth=$MAP_WIDTH"
+  url+="&mapHeight=$MAP_HEIGHT"
+  url+="&ocultar=1"
+
+  curl $CURL_EXTRA_FLAGS \
+       --cookie JSESSIONID=$SESSION_COOKIE \
+       -X GET \
+       $url |
+       grep -o "Ninguna cuenta catastral encontrada"
+}
+
+function get_account() {
+  local ENDPOINT="/principalMapFrameActualizar.jsp"
+  local url=$ROOT_URL$ENDPOINT
+
+  # Parameters
+  url+="?"
+
+  url+="&op=-1"
+  url+="&x=$LON"
+  url+="&y=$LAT"
+  url+="&z=1"
+  url+="&mapWidth=$MAP_WIDTH"
+  url+="&mapHeight=$MAP_HEIGHT"
+  url+="&dir=0"
+  url+="&xMouseDown=$MOUSE_CLICK_X"
+  url+="&yMouseDown=$MOUSE_CLICK_Y"
+  url+="&xMouseUp=$MOUSE_CLICK_X"
+  url+="&yMouseUp=$MOUSE_CLICK_Y"
+  url+="&stepZoom=2"
+  url+="&verEscala=1"
+  url+="&verVistaAerea=1"
+  url+="&verControles=1"
+  url+="&xVistaAerea=0"
+  url+="&yVistaAerea=0"
+  url+="&zVistaAerea=0"
+  url+="&setStar=0"
+  url+="&sizeVistaAerea=150"
+  url+="&topStarGuardado=0"
+  url+="&leftStarGuardado=0"
+  url+="&displayLayerGuardado=none"
+  url+="&topLayerGuardado=0"
+  url+="&leftLayerGuardado=0"
+  url+="&widthLayerGuardado=0"
+  url+="&heightLayerGuardado=0"
+  url+="&mapImage=MapStreamServlet\?x=$LON"
+  url+="&y=$LAT"
+  url+="&z=1.0"
+  url+="&mapWidth=$MAP_WIDTH"
+  url+="&mapHeight=$MAP_HEIGHT"
+  url+="&geosetRutaArchivoPrincipal=D:\\seduvidatos\\cartografia\\Default3.mdf"
+  url+="&geosetRutaCarpetaPrincipal=D:\\seduvidatos\\cartografia"
+  url+="&recupSession=1"
+  url+="&guardarMapa=0"
+  url+="&setCopyright=0"
+  url+="&xUtm=0"
+  url+="&yUtm=0"
+  url+="&zFrameVistaAerea=3.0"
+  url+="&zMapFrameVistaAerea=1.0"
+
+  local cadastre_number="[[:digit:]]{3}_[[:digit:]]{3}_[[:digit:]]+"
+
+  curl $CURL_EXTRA_FLAGS \
+       --cookie JSESSIONID=$SESSION_COOKIE \
+       -X GET \
+       $url |
+       grep -o -E $cadastre_number
+}
+
+prepare_to_request_account
+get_account
