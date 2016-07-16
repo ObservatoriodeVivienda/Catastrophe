@@ -35,9 +35,14 @@ chmod 775 catastrophe
 
 
 # Roadmap
+
+༼ つ ◕_◕ ༽つ Give me your pull request...
+
 - [ ] Write more context info
 - [ ] Write some tests
 - [ ] Code another script to scrap the cadastre data using [this KMLs][kml-dataset]
+
+
 
 [kml-dataset]: http://datos.labcd.mx/dataset?tags=Catastro
 
