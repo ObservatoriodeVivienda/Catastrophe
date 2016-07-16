@@ -1,55 +1,74 @@
 # Description
-In the [Slack][cm-slack] of [Codeando México][cm-twitter],
-someone from an ONG asked for help to scrap some data.
+An NGO, [Observatorio del Derecho a la Vivienda][observatorio-web] was
+trying to get the cadastre data of México City, but [SEDUVI][seduvi-map]
+(the corresponding goverment organization) doesn't have an API to access
+this public information.
 
-This time, [SEDUVI's cadastral map][seduvi-map] was the target.
-
-This repository includes my effort to help
-[Observatorio del Derecho a la Vivienda][observatorio-web].
+This repository includes a script to query their database.
 
 [cm-slack]: http://slack.codeandomexico.org/
 [cm-twitter]: https://twitter.com/CodeandoMexico
 [observatorio-web]: http://www.observatoriodevivienda.org/
 [seduvi-map]: http://ciudadmx.df.gob.mx:8080/seduvi/
 
-# Do it yourself
-1. Get a KML from [here][kml-dataset].
 
-2. Extract a latitude/longitude from your KML.
+# Usage
+1) Download the script:
 
 ```bash
-grep '<coordinates>.*</coordinates>' -m 1 doc.kml |
-awk '{print $3}' |
-cut -d ','
+wget https://raw.githubusercontent.com/MrOutis/Catastrophe/master/catastrophe
 ```
-_Note: The latitude is a negative number_
 
-3. Download the **catastrophe** script and make it runnable:
+_Make sure the script is runnable_:
+
 ```bash
-wget https://raw.githubusercontent.com/MrOutis/Catastrophe/master/catastrophe &&
 chmod 775 catastrophe
-``
-
-3. Run the following to get the cadastre account:
-```bash
-# replace `lat` and `lon` with the output of step 2
-./catastrophe lat lon
 ```
 
-4. ????
+2) Run it with a latitude and a longitude:
 
-5. **PROFIT!!!**
+```bash
+./catastrophe 19.401408 -99.201958
+```
 
-Now, to make the scraper, you need to iterate over your KML,
-getting one latitude and longitude of each polygon, and
-for each one, run `catastrope lat lon`.
+3) Enjoy your cadastre account :neckbeard:
 
-This implementation is language agnostic, you only need a
-computer capable of run `bash` and `awk`.
+
+# Roadmap
+- [ ] Write more context info
+- [ ] Write some tests
+- [ ] Code another script to scrap the cadastre data using [this KMLs][kml-dataset]
 
 [kml-dataset]: http://datos.labcd.mx/dataset?tags=Catastro
 
-# Roadmap
-- [] Write a better README
-- [] Write the rest of the roadmap
+
+# License
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+----------------------------------------------------------------------------
+
+
+Mr. Outis wrote this script.
+If you meet him some day, and you think this stuff is worth it,
+you can buy him a beer in return.
+<mroutis@protonmail.com>
 
