@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from pyvirtualdisplay import Display
 from selenium import webdriver
-
+import ipdb
 class query_catastro(object):
 	"""
 	sudo pip install -U selenium
@@ -99,11 +99,8 @@ class query_catastro(object):
 		f = opener.open(url)
 		text = str(f.read())
 		catastro = re.search("[0-9]{3}_[0-9]{3}_[0-9]{2}",text).group(0)	
-		soup = BeautifulSoup(text,'html.parser')
-		delegacion = soup.find_all('td')[8].getText()
-		cp = soup.find_all('td')[6].getText()
-		colonia = soup.find_all('td')[4].getText()
-		return catastro, delegacion, cp
+		delegacion = re.search("c[A-Z][\w+\s\w+]*",text).group(0)
+		return catastro, delegacion
 
 
 	def get_ficha(self,LAT,LON):
