@@ -47,6 +47,23 @@ chmod 775 catastrophe
 [kml-dataset]: http://datos.labcd.mx/dataset?tags=Catastro
 
 
+# Contributors
+
+| [![MrOutis][ph-mroutis]][gh-mroutis] | [![rsanchezavalos][ph-rsanchez]][gh-rsanchez] | [![RNanclares][ph-rnanclares]][gh-rnanclares] |
+|                 :--:                 |                     :--:                      |                     :--:                      |
+|        [MrOutis][gh-mroutis]         |         [rsanchezavalos][gh-rsanchez]         |          [RNanclares][gh-rnanclares]          |
+
+
+[ph-mroutis]: https://avatars.githubusercontent.com/u/7363250?v=3&s=80
+[gh-mroutis]: https://github.com/MrOutis
+
+[ph-rsanchez]: https://avatars.githubusercontent.com/u/10931011?v=3&s=80
+[gh-rsanchez]: https://github.com/rsanchezavalos
+
+[ph-rnanclares]: https://avatars.githubusercontent.com/u/11431207?v=3&s=80
+[gh-rnanclares]: https://github.com/RNanclares
+
+
 # License
 MIT License
 
@@ -67,13 +84,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
-----------------------------------------------------------------------------
-
-
-Mr. Outis wrote this script.
-If you meet him some day, and you think this stuff is worth it,
-you can buy him a beer in return.
-<mroutis@protonmail.com>
 
