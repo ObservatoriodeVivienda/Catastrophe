@@ -18,24 +18,19 @@ class query_catastro(object):
 
 	How to use it:
 
-	import catastrophe
+	import catastrophe	
 	#instanciate class - This function prepares the application and assigns a valid cookie
+	
 	model = catastrophe.query_catastro()	
+	
 	#Having done that you are ready to search for a lat/long
+	
 	catastro = model.get_account(19.401408,-99.201958)
+	
 	#You will receive a dictionare with zoning and land use information from SEDUVI:
-	#CuentaCatastral: 
-	#latitud: 
-	#longitud:
-	#Delegacion:
-	#Uso del Suelo 1: 
-	#Niveles: 
-	#Altura:
-	#'% Área Libre:
-	#M2 min. Vivienda: 
-	#Densidad:
-	#Superficie Máxima de Construcción (Sujeta a restricciones*):
-	#Número de Viviendas Permitidas:
+	#CuentaCatastral: |latitud: |longitud: |Delegacion: |Uso del Suelo 1: |Niveles: 
+	#|Altura: |'% Área Libre: |M2 min. Vivienda: |Densidad: 
+	#|Superficie Máxima de Construcción (Sujeta a restricciones*): |Número de Viviendas Permitidas:
 	"""
 
 	def prepare_to_request_account(self,LAT,LON):
