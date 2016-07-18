@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 __author__      = "rsanchezav"
 
-import urllib2
 import re
+import pdb
 import requests
+import urllib2
+from lxml import html
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from pyvirtualdisplay import Display
-from selenium import webdriver
-import ipdb
+
 class query_catastro(object):
 	"""
 	sudo pip install -U selenium
@@ -16,10 +17,20 @@ class query_catastro(object):
 	sudo apt-get install xvfb
 
 	How to use it:
-	import catastrophe
-	model = catastrophe.query_catastro()
-	catastro = model.get_account(19.401408,-99.201958)
 
+	import catastrophe	
+	#instanciate class - This function prepares the application and assigns a valid cookie
+	
+	model = catastrophe.query_catastro()	
+	
+	#Having done that you are ready to search for a lat/long
+	
+	catastro = model.get_account(19.401408,-99.201958)
+	
+	#You will receive a dictionare with zoning and land use information from SEDUVI:
+	#CuentaCatastral: |latitud: |longitud: |Delegacion: |Uso del Suelo 1: |Niveles: 
+	#|Altura: |'% Área Libre: |M2 min. Vivienda: |Densidad: 
+	#|Superficie Máxima de Construcción (Sujeta a restricciones*): |Número de Viviendas Permitidas:
 	"""
 
 	def prepare_to_request_account(self,LAT,LON):
@@ -104,10 +115,9 @@ class query_catastro(object):
 
 
 	def get_ficha(self,LAT,LON):
-
 		info = self.get_account(LAT,LON)
 		print "info reached"
-		
+
 		ENDPOINT="/fichasReporte/fichaInformacion.jsp?"		
 		url=self.ROOT_URL + ENDPOINT
 		url+="nombreConexion=" + str(info[1])
@@ -116,19 +126,23 @@ class query_catastro(object):
 		url+="&x=" + str(LON)
 		url+="&y="+ str(LAT)
 		url+="&z=0.5" 
-		print url
 
-		url = "http://ciudadmx.df.gob.mx:8080/seduvi/fichasReporte/fichaInformacion.jsp?nombreConexion=ALVARO OBREGON&cuentaCatastral=037_354&idDenuncia=&ocultar=1&x=-99.201958&y=19.401408&z=0.5"
 		opener = urllib2.build_opener()
 		opener.addheaders.append(('Cookie', 'JSESSIONID=' + self.SESSION_COOKIE))
+		req = requests.get(url)
+		tree = html.fromstring(req.content)
+		var = tree.xpath('//th[@class="zon"]/text()')
+		ans = tree.xpath('//td[@class="zon"]/text()')
+		diccionario_predio = {}
 
-		req = requests.get(url).text
-		print req
-		text = str(req)
-		return text
+		diccionario_predio["CuentaCatastral"] = str(info[0])
+		diccionario_predio["Delegacion"] = str(info[1])
+		diccionario_predio["latitud"] = str(LAT)
+		diccionario_predio["longitud"] = str(LON)
 
-
-
+		for v, a in zip(var[:8],ans[:8]):
+			diccionario_predio[v] = a
+		return diccionario_predio
 
 	def __init__(self):
 		super(query_catastro, self).__init__()
