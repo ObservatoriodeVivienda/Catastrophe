@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 __author__      = "rsanchezav"
 
-import urllib2
 import re
-from lxml import html
+import pdb
 import requests
+import urllib2
+from lxml import html
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from pyvirtualdisplay import Display
-from selenium import webdriver
-import pdb
+
 class query_catastro(object):
 	"""
 	sudo pip install -U selenium
